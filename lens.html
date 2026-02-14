@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DSE Ray Diagram (Case 7 Clean)</title>
+    <title>DSE Ray Diagram (Slim UI)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { overscroll-behavior: none; }
@@ -14,27 +14,28 @@
         }
         
         .nature-box {
-            @apply text-center py-2 px-3 text-sm font-black uppercase tracking-wide rounded-md shadow-sm transition-colors duration-300;
+            @apply text-center py-1 px-2 text-xs font-black uppercase tracking-wide rounded-md shadow-sm transition-colors duration-300;
         }
         .nature-real { @apply bg-blue-100 text-blue-800 border border-blue-200; }
         .nature-virtual { @apply bg-yellow-100 text-yellow-800 border border-yellow-200; }
         .nature-infinity { @apply bg-slate-200 text-slate-600 border border-slate-300; }
 
         .stat-item {
-            @apply flex flex-col items-center justify-center bg-white px-1 py-1 rounded border border-slate-200 shadow-sm min-w-[45px] flex-1;
+            @apply flex flex-col items-center justify-center bg-white px-1 py-0.5 rounded border border-slate-200 shadow-sm min-w-[40px] flex-1;
         }
-        .stat-label { @apply text-[9px] uppercase font-bold text-slate-400 leading-none mb-0.5; }
-        .stat-val { @apply text-[11px] font-mono font-bold text-slate-800 leading-none; }
+        .stat-label { @apply text-[8px] uppercase font-bold text-slate-400 leading-none mb-0.5; }
+        .stat-val { @apply text-[10px] font-mono font-bold text-slate-800 leading-none; }
 
+        /* BUTTON STYLE UPDATED: Smaller padding, smaller font */
         .case-btn {
-            @apply flex flex-col items-center justify-center py-2 px-1 text-[10px] font-bold bg-white border border-slate-300 rounded shadow-sm text-slate-600 transition-all active:scale-95 leading-tight text-center h-full;
+            @apply flex flex-col items-center justify-center py-1 px-0.5 text-[9px] font-bold bg-white border border-slate-300 rounded shadow-sm text-slate-600 transition-all active:scale-95 leading-tight text-center h-full;
         }
         .case-btn.active {
             @apply bg-slate-800 text-white border-slate-800 shadow-md ring-1 ring-slate-800;
         }
 
         .toggle-eye {
-            @apply absolute bottom-6 right-6 flex items-center gap-2 px-4 py-3 bg-white/95 backdrop-blur border border-slate-300 rounded-full shadow-xl text-sm font-bold text-slate-700 active:scale-95 transition-transform select-none z-50 cursor-pointer;
+            @apply absolute bottom-6 right-6 flex items-center gap-2 px-3 py-2 bg-white/95 backdrop-blur border border-slate-300 rounded-full shadow-xl text-xs font-bold text-slate-700 active:scale-95 transition-transform select-none z-50 cursor-pointer;
         }
         .toggle-eye.active {
             @apply bg-green-100 border-green-500 text-green-700 ring-2 ring-green-200;
@@ -44,7 +45,7 @@
 </head>
 <body class="bg-slate-50 h-screen w-screen flex flex-col overflow-hidden text-slate-800">
 
-    <div class="flex-none bg-white border-b border-slate-200 z-30 shadow-md p-2 flex flex-col gap-2">
+    <div class="flex-none bg-white border-b border-slate-200 z-30 shadow-md p-1.5 flex flex-col gap-1.5">
         <div id="natureBox" class="nature-box nature-virtual">Loading...</div>
         <div class="flex gap-1 justify-between">
             <div class="stat-item border-b-2 border-slate-400"><span class="stat-label">f</span><span id="disp-f" class="stat-val">--</span></div>
@@ -57,30 +58,30 @@
     </div>
 
     <div class="flex-none flex flex-col bg-slate-100 border-b border-slate-200 z-20">
-        <div class="flex items-center gap-2 p-2 border-b border-slate-200 bg-white">
-            <select id="lensSelect" onchange="manualUpdate()" class="text-xs p-1.5 border rounded bg-white flex-none w-20 font-bold shadow-sm">
+        <div class="flex items-center gap-2 p-1.5 border-b border-slate-200 bg-white">
+            <select id="lensSelect" onchange="manualUpdate()" class="text-[10px] p-1 border rounded bg-white flex-none w-16 font-bold shadow-sm">
                 <option value="convex">Convex</option>
                 <option value="concave">Concave</option>
             </select>
-            <span class="text-xs font-bold text-slate-400">u:</span>
-            <input type="range" id="uRange" min="20" max="600" value="200" oninput="manualUpdate()" class="flex-1 h-6 accent-slate-600">
+            <span class="text-[10px] font-bold text-slate-400">u:</span>
+            <input type="range" id="uRange" min="20" max="600" value="200" oninput="manualUpdate()" class="flex-1 h-5 accent-slate-600">
         </div>
-        <div class="grid grid-cols-4 gap-2 p-2">
-            <button onclick="setCase(1)" id="btn1" class="case-btn">1. u &lt; f<br><span class="text-[9px] font-normal opacity-75">Virtual</span></button>
-            <button onclick="setCase(2)" id="btn2" class="case-btn">2. u = f<br><span class="text-[9px] font-normal opacity-75">Infinity</span></button>
-            <button onclick="setCase(3)" id="btn3" class="case-btn">3. f-2f<br><span class="text-[9px] font-normal opacity-75">Mag. Real</span></button>
-            <button onclick="setCase(4)" id="btn4" class="case-btn">4. u = 2f<br><span class="text-[9px] font-normal opacity-75">Same</span></button>
-            <button onclick="setCase(5)" id="btn5" class="case-btn">5. u &gt; 2f<br><span class="text-[9px] font-normal opacity-75">Dim. Real</span></button>
-            <button onclick="setCase(6)" id="btn6" class="case-btn">6. Conv ∞<br><span class="text-[9px] font-normal opacity-75">Distant</span></button>
-            <button onclick="setCase(7)" id="btn7" class="case-btn bg-slate-50 border-slate-200 text-slate-500">7. Conc ∞<br><span class="text-[9px] font-normal opacity-75">Virtual</span></button>
-            <button onclick="setCase(8)" id="btn8" class="case-btn bg-slate-50 border-slate-200 text-slate-500">8. Conc<br><span class="text-[9px] font-normal opacity-75">Finite</span></button>
+        <div class="grid grid-cols-4 gap-1 p-1">
+            <button onclick="setCase(1)" id="btn1" class="case-btn">1. u &lt; f<br><span class="text-[8px] font-normal opacity-75">Virtual</span></button>
+            <button onclick="setCase(2)" id="btn2" class="case-btn">2. u = f<br><span class="text-[8px] font-normal opacity-75">Infinity</span></button>
+            <button onclick="setCase(3)" id="btn3" class="case-btn">3. f-2f<br><span class="text-[8px] font-normal opacity-75">Mag. Real</span></button>
+            <button onclick="setCase(4)" id="btn4" class="case-btn">4. u = 2f<br><span class="text-[8px] font-normal opacity-75">Same</span></button>
+            <button onclick="setCase(5)" id="btn5" class="case-btn">5. u &gt; 2f<br><span class="text-[8px] font-normal opacity-75">Dim. Real</span></button>
+            <button onclick="setCase(6)" id="btn6" class="case-btn">6. Conv ∞<br><span class="text-[8px] font-normal opacity-75">Distant</span></button>
+            <button onclick="setCase(7)" id="btn7" class="case-btn bg-slate-50 border-slate-200 text-slate-500">7. Conc ∞<br><span class="text-[8px] font-normal opacity-75">Virtual</span></button>
+            <button onclick="setCase(8)" id="btn8" class="case-btn bg-slate-50 border-slate-200 text-slate-500">8. Conc<br><span class="text-[8px] font-normal opacity-75">Finite</span></button>
         </div>
     </div>
 
     <main class="flex-1 relative w-full overflow-hidden bg-white">
         <canvas id="canvas" class="w-full h-full lab-grid block cursor-crosshair"></canvas>
         <button id="eyeBtn" onclick="toggleEye()" class="toggle-eye hidden-ctrl">
-            <span class="text-lg">👁️</span> Show Eye
+            <span class="text-base">👁️</span> Show Eye
         </button>
     </main>
 
@@ -237,7 +238,7 @@
                 drawRayLine(cx, ly, width, ly + sr*(width-cx), outColor); drawRayArrow(cx + 40, ly + sr*40, sr, outColor);
                 drawImageArrow(ix, cy, ix, iy, "#ef4444", false);
             } else {
-                // --- CASE 7: Concave Infinity (No Eye) ---
+                // --- CASE 7: Concave Infinity ---
                 const f = F_VAL;
                 
                 // 1. Ray 1: Center Ray
@@ -253,8 +254,6 @@
                 // 3. Image
                 const ix = cx - f; const iy = y_lens; drawRayLine(cx, y_lens, ix, iy, outColor, true);
                 drawImageArrow(ix, cy, ix, iy, "#ef4444", true);
-                
-                // *NO EYE DRAWING HERE*
             }
         }
 
@@ -305,7 +304,6 @@
 
         function updateEyeBtnStyle() {
             const btn = document.getElementById('eyeBtn');
-            // Hide eye button if in infinity mode
             const isVirtual = !state.infinity && ((state.lens === 'convex' && state.u < F_VAL) || state.lens === 'concave');
             if (isVirtual) { btn.classList.remove('hidden-ctrl'); if(state.showEye) btn.classList.add('active'); else btn.classList.remove('active'); } 
             else { btn.classList.add('hidden-ctrl'); }
@@ -327,10 +325,7 @@
                 case 1: targetU = 80; break; case 2: targetU = 120; break; case 3: targetU = 180; break; case 4: targetU = 240; break; case 5: targetU = 360; break; case 6: state.infinity = true; break; case 7: state.infinity = true; break; case 8: targetU = 240; break;
             }
             state.u = targetU; if(!state.infinity) document.getElementById('uRange').value = targetU;
-            
-            // Only show eye for Case 1 and 8
             state.showEye = (n === 1 || n === 8);
-            
             updateEyeBtnStyle(); draw();
         }
         resize(); setCase(1);
