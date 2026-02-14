@@ -2,152 +2,94 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ray Diagrams for Lens</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DSE Ray Diagram (Mobile)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        body { overscroll-behavior: none; }
         .lab-grid {
             background-color: #ffffff;
-            background-image: linear-gradient(#e2e8f0 1px, transparent 1px), linear-gradient(90deg, #e2e8f0 1px, transparent 1px);
-            background-size: 30px 30px;
+            background-image: linear-gradient(#f1f5f9 1px, transparent 1px), linear-gradient(90deg, #f1f5f9 1px, transparent 1px);
+            background-size: 20px 20px;
         }
-        .stat-box {
-            @apply flex flex-col items-center justify-center bg-white p-2 rounded border border-slate-200 shadow-sm min-w-[70px];
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .stat-item {
+            @apply flex flex-col items-center justify-center bg-white px-2 py-1 rounded border border-slate-200 shadow-sm min-w-[50px];
         }
-        .stat-label {
-            @apply text-[10px] uppercase font-bold text-slate-400 tracking-wider;
+        .stat-label { @apply text-[9px] uppercase font-bold text-slate-400; }
+        .stat-val { @apply text-xs font-mono font-bold text-slate-800; }
+
+        .case-btn {
+            @apply flex-none px-3 py-2 text-xs font-medium bg-white border border-slate-300 rounded-full text-slate-600 whitespace-nowrap transition-colors;
         }
-        .stat-val {
-            @apply text-lg font-mono font-bold text-slate-800;
+        .case-btn.active {
+            @apply bg-slate-800 text-white border-slate-800 shadow-md;
         }
-        .btn-preset {
-            @apply w-full px-3 py-2 text-xs font-medium text-left bg-white border border-slate-300 rounded text-slate-600 hover:bg-slate-50 transition-colors;
+
+        .toggle-eye {
+            @apply absolute bottom-6 right-6 flex items-center gap-2 px-4 py-3 bg-white/95 backdrop-blur border border-slate-300 rounded-full shadow-xl text-sm font-bold text-slate-700 active:scale-95 transition-transform select-none z-50 cursor-pointer;
         }
-        .btn-active {
-            @apply border-slate-800 text-slate-900 font-bold shadow-sm ring-1 ring-slate-200;
+        .toggle-eye.active {
+            @apply bg-green-100 border-green-500 text-green-700 ring-2 ring-green-200;
         }
-        .btn-toggle {
-            @apply flex items-center gap-2 px-4 py-2 bg-white border border-slate-300 rounded shadow-sm text-sm font-bold text-slate-700 hover:bg-slate-50 hover:text-green-600 transition-all cursor-pointer select-none;
-        }
-        .btn-toggle.active {
-            @apply bg-green-100 border-green-500 text-green-800 ring-2 ring-green-200;
-        }
-        .hidden-ctrl {
-            display: none !important;
-        }
+        .hidden-ctrl { display: none !important; }
     </style>
 </head>
-<body class="bg-slate-50 h-screen flex flex-col overflow-hidden text-slate-800">
+<body class="bg-slate-100 h-screen w-screen flex flex-col overflow-hidden text-slate-800">
 
-    <header class="flex-none bg-white border-b border-slate-200 shadow-sm z-20">
-        <div class="max-w-7xl mx-auto px-4 py-3">
-            <div class="flex flex-col lg:flex-row justify-between items-center gap-4">
-                
-                <div class="flex items-center gap-2">
-                    <h1 class="text-xl font-black text-slate-900 tracking-tight">Ray Diagrams for Lens</h1>
-                </div>
-
-                <div class="grid grid-cols-6 gap-2 w-full lg:w-auto">
-                    <div class="stat-box border-b-2 border-slate-400">
-                        <span class="stat-label">Focal (f)</span>
-                        <span id="disp-f" class="stat-val">120</span>
-                    </div>
-                    <div class="stat-box border-b-2 border-black">
-                        <span class="stat-label">Obj Dist (u)</span>
-                        <span id="disp-u" class="stat-val">240</span>
-                    </div>
-                    <div class="stat-box border-b-2 border-blue-500">
-                        <span class="stat-label">Img Dist (v)</span>
-                        <span id="disp-v" class="stat-val">240</span>
-                    </div>
-                    <div class="stat-box border-b-2 border-purple-500">
-                        <span class="stat-label">Mag (|m|)</span>
-                        <span id="disp-m" class="stat-val">1.00x</span>
-                    </div>
-                    <div class="stat-box border-b-2 border-black">
-                        <span class="stat-label">Obj Ht (ho)</span>
-                        <span id="disp-ho" class="stat-val">90</span>
-                    </div>
-                    <div class="stat-box border-b-2 border-blue-500">
-                        <span class="stat-label">Img Ht (hi)</span>
-                        <span id="disp-hi" class="stat-val">90</span>
-                    </div>
-                </div>
-            </div>
+    <div class="flex-none bg-white border-b border-slate-200 z-30 shadow-sm">
+        <div class="flex overflow-x-auto hide-scrollbar p-2 gap-2 items-center">
+            <h1 class="font-black text-xs mr-1 flex-none text-slate-400">DSE PHY</h1>
+            <div class="stat-item border-b-2 border-slate-400"><span class="stat-label">f</span><span id="disp-f" class="stat-val">--</span></div>
+            <div class="stat-item border-b-2 border-black"><span class="stat-label">u</span><span id="disp-u" class="stat-val">--</span></div>
+            <div class="stat-item border-b-2 border-blue-500"><span class="stat-label">v</span><span id="disp-v" class="stat-val">--</span></div>
+            <div class="stat-item border-b-2 border-purple-500"><span class="stat-label">Mag</span><span id="disp-m" class="stat-val">--</span></div>
+            <div class="px-2 flex-none text-[10px] font-bold text-slate-500 w-24 leading-tight" id="natureDisplay">--</div>
         </div>
-    </header>
-
-    <div class="flex-1 flex overflow-hidden">
-        
-        <aside class="w-72 bg-slate-100 border-r border-slate-200 flex-none overflow-y-auto p-4 flex flex-col gap-6">
-            
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-                <h3 class="text-xs font-bold text-slate-400 uppercase mb-3 text-left">Adjustments</h3>
-                <div class="space-y-4">
-                    <div>
-                        <label class="text-xs font-bold text-slate-600 block mb-1 text-left">Lens Type</label>
-                        <select id="lensSelect" onchange="manualUpdate()" class="w-full text-sm p-2 border rounded bg-slate-50">
-                            <option value="convex">Convex (Converging)</option>
-                            <option value="concave">Concave (Diverging)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-slate-600 block mb-1 text-left">Object Distance (u)</label>
-                        <input type="range" id="uRange" min="20" max="600" value="200" oninput="manualUpdate()" class="w-full accent-slate-600">
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex-1">
-                <h3 class="text-xs font-bold text-slate-400 uppercase mb-3 text-left">Experiment Cases</h3>
-                <div class="flex flex-col gap-2 items-start w-full">
-                    <button onclick="setCase(1)" id="btn1" class="btn-preset">1. Convex: u < f (Virtual)</button>
-                    <button onclick="setCase(2)" id="btn2" class="btn-preset">2. Convex: u = f (Infinity)</button>
-                    <button onclick="setCase(3)" id="btn3" class="btn-preset">3. Convex: 2f > u > f</button>
-                    <button onclick="setCase(4)" id="btn4" class="btn-preset">4. Convex: u = 2f (Same Size)</button>
-                    <button onclick="setCase(5)" id="btn5" class="btn-preset">5. Convex: u > 2f</button>
-                    <button onclick="setCase(6)" id="btn6" class="btn-preset">6. Convex: u = ∞ (Oblique)</button>
-                    <button onclick="setCase(7)" id="btn7" class="btn-preset">7. Concave: u = ∞ (Fixed)</button>
-                    <button onclick="setCase(8)" id="btn8" class="btn-preset">8. Concave: Finite Object</button>
-                </div>
-            </div>
-        </aside>
-
-        <main class="flex-1 relative bg-slate-50 p-6 flex items-center justify-center">
-            <div class="relative w-full h-full max-w-5xl max-h-[600px] border-4 border-white shadow-xl rounded-lg overflow-hidden bg-white">
-                <canvas id="canvas" class="w-full h-full lab-grid block cursor-crosshair"></canvas>
-                
-                <div class="absolute bottom-0 left-0 right-0 p-4 flex justify-between items-end pointer-events-none">
-                    
-                    <div class="bg-white/90 px-4 py-2 rounded border border-slate-200 shadow text-xs backdrop-blur-sm pointer-events-auto">
-                        <span class="block font-bold text-slate-400 uppercase">Image Nature</span>
-                        <span id="natureDisplay" class="font-bold text-slate-800 text-sm">--</span>
-                    </div>
-
-                    <button id="eyeBtn" onclick="toggleEye()" class="btn-toggle pointer-events-auto shadow-md hidden-ctrl">
-                        <span class="text-xl">👁️</span>
-                        <span>Show Observer's Eye</span>
-                    </button>
-                </div>
-            </div>
-        </main>
     </div>
+
+    <div class="flex-none flex flex-col gap-2 p-2 bg-slate-50 border-b border-slate-200 z-20">
+        <div class="flex items-center gap-2">
+            <select id="lensSelect" onchange="manualUpdate()" class="text-xs p-2 border rounded bg-white flex-none w-20 font-bold shadow-sm">
+                <option value="convex">Convex</option>
+                <option value="concave">Concave</option>
+            </select>
+            <input type="range" id="uRange" min="20" max="600" value="200" oninput="manualUpdate()" class="flex-1 h-8 accent-slate-600">
+        </div>
+        <div class="flex overflow-x-auto hide-scrollbar gap-2 pb-1">
+            <button onclick="setCase(1)" id="btn1" class="case-btn">1. u < f (Virtual)</button>
+            <button onclick="setCase(2)" id="btn2" class="case-btn">2. u = f (Inf)</button>
+            <button onclick="setCase(3)" id="btn3" class="case-btn">3. 2f > u > f</button>
+            <button onclick="setCase(4)" id="btn4" class="case-btn">4. u = 2f (Same)</button>
+            <button onclick="setCase(5)" id="btn5" class="case-btn">5. u > 2f</button>
+            <button onclick="setCase(6)" id="btn6" class="case-btn">6. u = ∞ (Off-axis)</button>
+            <button onclick="setCase(7)" id="btn7" class="case-btn">7. Concave ∞</button>
+            <button onclick="setCase(8)" id="btn8" class="case-btn">8. Concave Finite</button>
+        </div>
+    </div>
+
+    <main class="flex-1 relative w-full overflow-hidden bg-white">
+        <canvas id="canvas" class="w-full h-full lab-grid block cursor-crosshair"></canvas>
+
+        <button id="eyeBtn" onclick="toggleEye()" class="toggle-eye hidden-ctrl">
+            <span class="text-lg">👁️</span> Show Eye
+        </button>
+    </main>
 
     <script>
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         let width, height, cx, cy;
-
-        const F_MAG = 120; 
-        const HO = 90; // 3 Grid Units
-        const INF_SLOPE = 0.25; 
+        let F_MAG = 120; let HO = 90; const INF_SLOPE = 0.2; 
         
         let state = {
             lens: 'convex',
-            u: 240,
+            u: 80,
             infinity: false,
-            caseNum: 3,
-            showEye: false
+            caseNum: 1,
+            showEye: true
         };
 
         function resize() {
@@ -157,214 +99,142 @@
             height = canvas.height;
             cx = width / 2;
             cy = height / 2;
+            if (width < 500) { F_MAG = 80; HO = 60; } else { F_MAG = 120; HO = 90; }
             draw();
         }
         window.addEventListener('resize', resize);
 
         function toggleEye() {
             state.showEye = !state.showEye;
-            const btn = document.getElementById('eyeBtn');
-            if(state.showEye) btn.classList.add('active');
-            else btn.classList.remove('active');
+            updateEyeBtnStyle();
             draw();
         }
 
-        function checkEyeButtonVisibility() {
+        function updateEyeBtnStyle() {
             const btn = document.getElementById('eyeBtn');
             if (state.caseNum === 1 || state.caseNum === 8) {
                 btn.classList.remove('hidden-ctrl');
+                if(state.showEye) btn.classList.add('active');
+                else btn.classList.remove('active');
             } else {
                 btn.classList.add('hidden-ctrl');
-                state.showEye = false; 
-                btn.classList.remove('active');
             }
         }
-
-        // --- DRAWING ENGINE ---
 
         function draw() {
             ctx.clearRect(0, 0, width, height);
             drawGridBasics();
-            
-            if (state.infinity) {
-                drawInfinityCase();
-            } else {
-                drawFiniteCase();
-            }
+            if (state.infinity) drawInfinityCase(); else drawFiniteCase();
         }
 
         function drawGridBasics() {
+            ctx.beginPath(); ctx.strokeStyle = "#e2e8f0"; ctx.lineWidth = 1;
+            ctx.moveTo(0, cy); ctx.lineTo(width, cy); ctx.stroke();
             ctx.beginPath(); ctx.strokeStyle = "#000"; ctx.lineWidth = 2;
             ctx.moveTo(0, cy); ctx.lineTo(width, cy); ctx.stroke();
             ctx.beginPath(); ctx.moveTo(cx, 0); ctx.lineTo(cx, height); ctx.stroke();
             drawAxisArrows(cx, 0, height);
-
             drawPoint(cx, cy, "O");
             drawPoint(cx + F_MAG, cy, "F");
             drawPoint(cx - F_MAG, cy, "F");
-            drawPoint(cx + 2*F_MAG, cy, "2F");
-            drawPoint(cx - 2*F_MAG, cy, "2F");
+            if (cx + 2*F_MAG < width - 10) drawPoint(cx + 2*F_MAG, cy, "2F");
+            if (cx - 2*F_MAG > 10) drawPoint(cx - 2*F_MAG, cy, "2F");
         }
 
         function drawFiniteCase() {
-            const u_coord = -state.u;
-            const f_coord = state.lens === 'convex' ? F_MAG : -F_MAG;
+            const u_pixels = state.u * (F_MAG / 120); 
+            const f_pixels = state.lens === 'convex' ? F_MAG : -F_MAG;
+            const u_calc = -u_pixels; 
             
-            let v_coord, m;
-            if (Math.abs(u_coord + f_coord) < 0.01) { v_coord = Infinity; m = Infinity; }
-            else { v_coord = (f_coord * u_coord) / (u_coord + f_coord); m = v_coord / u_coord; }
+            let v_pixels, m;
+            if (Math.abs(u_calc + f_pixels) < 0.1) { v_pixels = Infinity; m = Infinity; }
+            else { v_pixels = (f_pixels * u_calc) / (u_calc + f_pixels); m = v_pixels / u_calc; }
 
-            const ix = cx + v_coord;
+            const ix = cx + v_pixels;
             const hi = HO * m;
             const iy = cy - hi;
-            const isVirtual = v_coord < 0; 
-
-            // Object
-            const ox = cx - state.u;
+            const isVirtual = v_pixels < 0; 
+            const ox = cx - u_pixels;
             const oy = cy - HO;
+            
+            // 1. Draw Object
             drawImageArrow(ox, cy, ox, oy, "#1e293b", false); 
 
-            // --- Standard Principal Rays (Red/Purple) ---
-            // Ray 1: Parallel -> Focus
+            // 2. Standard Ray 1 (Parallel -> F)
             drawRayLine(ox, oy, cx, oy, "#ef4444"); 
-            drawRayArrow(ox + 20, oy, 0, "#ef4444");
-            let r1_slope_out = 0;
+            drawRayArrow(ox + 15, oy, 0, "#ef4444");
+            let r1_slope = 0;
             if (state.lens === 'convex') {
-                r1_slope_out = HO / F_MAG; 
-                drawRayLine(cx, oy, width, oy + (width-cx)*r1_slope_out, "#ef4444");
-                if (isVirtual) drawRayLine(cx, oy, 0, oy - cx*r1_slope_out, "#ef4444", true);
+                r1_slope = HO / F_MAG; 
+                drawRayLine(cx, oy, width, oy + (width-cx)*r1_slope, "#ef4444");
+                if (isVirtual) drawRayLine(cx, oy, 0, oy - cx*r1_slope, "#ef4444", true);
             } else {
-                r1_slope_out = -HO / F_MAG; 
-                drawRayLine(cx, oy, width, oy + (width-cx)*r1_slope_out, "#ef4444");
+                r1_slope = -HO / F_MAG; 
+                drawRayLine(cx, oy, width, oy + (width-cx)*r1_slope, "#ef4444");
                 drawRayLine(cx, oy, cx-F_MAG, cy, "#ef4444", true);
             }
-
-            // Ray 2: Center
-            const slopeC = HO / state.u;
+            
+            // 3. Standard Ray 2 (Center)
+            const slopeC = HO / u_pixels;
             drawRayLine(ox, oy, width, cy + (width-cx)*slopeC, "#9333ea");
             if (isVirtual || state.lens==='concave') {
                 drawRayLine(cx, cy, 0, cy - cx*slopeC, "#9333ea", true);
             }
-
-            // --- Image ---
-            if (Math.abs(v_coord) < 5000 && Math.abs(v_coord) !== Infinity) {
-                // Dashed if Virtual (Left side)
+            
+            // 4. Draw Image
+            if (Math.abs(v_pixels) < 5000 && Math.abs(v_pixels) !== Infinity) {
                 drawImageArrow(ix, cy, ix, iy, "#2563eb", isVirtual);
             }
 
-            // --- OBSERVER EYE & CONSTRUCTION RAYS (Green) ---
+            // 5. DSE Style Single Ray for Eye
             if (state.showEye && (state.caseNum === 1 || state.caseNum === 8)) {
-                
-                // 1. Define Eye Position (Right side, slightly up to catch rays)
-                const ex = width - 60;
-                // Position eye roughly centered on the standard rays for aesthetics, or fixed.
-                // Let's fix it slightly offset to show the angle well.
+                // Eye Position (Fixed relative to screen)
+                const ex = width - 40; 
                 const ey = cy - 40; 
-
-                // 2. Draw Eye Icon
                 drawEyeIcon(ex, ey);
 
-                // 3. Construct Rays Backward from Eye
-                // We draw 2 rays to form the "Cone": Top of pupil, Bottom of pupil
-                const pupilTop = ey - 12;
-                const pupilBot = ey + 12;
+                // Calculate the single path: Image -> Lens -> Eye
+                // The ray leaves the lens towards the eye, so it MUST align with the Image-Eye line.
+                const m_eye = (ey - iy) / (ex - ix);
+                const ly = iy + m_eye * (cx - ix); // Intersection point on Lens
 
-                // Construction Logic:
-                // Start: Image Tip (ix, iy) -> Target: Eye (ex, pupilY)
-                
-                // Ray A (Top)
-                drawConstructionRay(ix, iy, ox, oy, ex, pupilTop);
-                // Ray B (Bottom)
-                drawConstructionRay(ix, iy, ox, oy, ex, pupilBot);
-                
-                // Highlight Cone
-                ctx.save();
-                ctx.beginPath();
-                ctx.moveTo(ex, pupilTop);
-                ctx.lineTo(ex, pupilBot);
-                // Find lens intersections for fill
-                const mA = (pupilTop - iy) / (ex - ix);
-                const lyA = iy + mA * (cx - ix);
-                const mB = (pupilBot - iy) / (ex - ix);
-                const lyB = iy + mB * (cx - ix);
-                ctx.lineTo(cx, lyB);
-                ctx.lineTo(cx, lyA);
-                ctx.closePath();
-                ctx.fillStyle = "rgba(22, 163, 74, 0.1)"; // Very faint green
-                ctx.fill();
-                ctx.restore();
+                // A. Virtual Part (Image to Lens) - Dashed Green
+                drawRayLine(ix, iy, cx, ly, "#16a34a", true); 
+
+                // B. Real Part 1 (Object to Lens) - Solid Green
+                // Ray must come from Object Tip to that Lens Point
+                drawRayLine(ox, oy, cx, ly, "#16a34a", false);
+                // Arrow for Object->Lens
+                const m_inc = (ly - oy) / (cx - ox);
+                drawRayArrow(ox + (cx-ox)*0.6, oy + m_inc*(cx-ox)*0.6, m_inc, "#16a34a");
+
+                // C. Real Part 2 (Lens to Eye) - Solid Green
+                drawRayLine(cx, ly, ex, ey, "#16a34a", false);
+                // Arrow for Lens->Eye
+                drawRayArrow(cx + (ex-cx)*0.5, ly + m_eye*(ex-cx)*0.5, m_eye, "#16a34a");
             }
-
-            updateStatBox(v_coord, m, hi);
-        }
-
-        // --- SPECIFIC OBSERVER LOGIC ---
-        function drawConstructionRay(ix, iy, ox, oy, tx, ty) {
-            // ix, iy: Virtual Image Tip
-            // ox, oy: Object Tip
-            // tx, ty: Target Eye Point
             
-            // 1. Calculate Intersection on Lens (x = cx)
-            // Equation of line from Image(ix,iy) to Eye(tx,ty)
-            // y - iy = m * (x - ix)
-            const m = (ty - iy) / (tx - ix);
-            const ly = iy + m * (cx - ix); // Y coordinate on the lens
-
-            const green = "#16a34a"; // Tailwind green-600
-
-            // STEP 1: Image to Lens (Dotted)
-            drawRayLine(ix, iy, cx, ly, green, true); 
-
-            // STEP 1b: Lens to Eye (Solid + Arrow)
-            drawRayLine(cx, ly, tx, ty, green, false);
-            drawRayArrow(cx + 40, ly + m*40, m, green);
-
-            // STEP 2: Object to Lens (Solid + Arrow)
-            // From Object Tip (ox, oy) to Lens Point (cx, ly)
-            const m_inc = (ly - oy) / (cx - ox);
-            drawRayLine(ox, oy, cx, ly, green, false);
-            drawRayArrow(ox + 50, oy + m_inc*50, m_inc, green);
+            updateStatBox(state.u, v_pixels * (120/F_MAG), m, hi * (90/HO)); 
         }
 
         function drawEyeIcon(x, y) {
-            const size = 25;
-            ctx.save();
-            ctx.lineWidth = 2;
-            ctx.strokeStyle = "#16a34a"; // Green Eye outline
-            ctx.fillStyle = "#fff";
-
-            // Side profile "Fish" shape
-            ctx.beginPath();
-            ctx.moveTo(x + size, y); // Back
-            // Top lid
-            ctx.quadraticCurveTo(x, y - size*0.8, x - size*0.5, y - 5);
-            // Front curve (Cornea)
-            ctx.quadraticCurveTo(x - size*0.8, y, x - size*0.5, y + 5);
-            // Bottom lid
+            const size = width < 500 ? 20 : 25; 
+            ctx.save(); ctx.lineWidth = 2; ctx.strokeStyle = "#16a34a"; ctx.fillStyle = "#fff";
+            ctx.beginPath(); ctx.moveTo(x + size, y); 
+            ctx.quadraticCurveTo(x, y - size*0.8, x - size*0.5, y - 4);
+            ctx.quadraticCurveTo(x - size*0.8, y, x - size*0.5, y + 4);
             ctx.quadraticCurveTo(x, y + size*0.8, x + size, y);
-            ctx.fill();
-            ctx.stroke();
-
-            // Pupil
-            ctx.beginPath();
-            ctx.fillStyle = "#16a34a";
-            ctx.arc(x - size*0.4, y, 4, 0, Math.PI*2);
-            ctx.fill();
-            ctx.restore();
+            ctx.fill(); ctx.stroke();
+            // Pupil centered
+            ctx.beginPath(); ctx.fillStyle = "#16a34a"; ctx.arc(x - size*0.4, y, 3, 0, Math.PI*2); ctx.fill(); ctx.restore();
         }
-
-        // --- STANDARD HELPERS ---
-
         function drawInfinityCase() {
-            // Simplified for brevity as Eye not requested here
-            // (Same logic as previous, just rendering standard rays)
             const rayColor = "#9333ea"; const outColor = "#ef4444"; const s = INF_SLOPE; 
             if (state.lens === 'convex') {
                 drawRayLine(0, cy - s*cx, width, cy + s*(width-cx), rayColor);
-                drawRayArrow(cx - 100, cy - s*100, s, rayColor);
-                const gap = 80; const r2y = cy - s*cx - gap; const ly = r2y + s*cx;
-                drawRayLine(0, r2y, cx, ly, rayColor);
-                drawRayArrow(cx - 100, ly - s*100, s, rayColor);
+                drawRayArrow(cx - 50, cy - s*50, s, rayColor);
+                const gap = F_MAG * 0.6; const r2y = cy - s*cx - gap; const ly = r2y + s*cx;
+                drawRayLine(0, r2y, cx, ly, rayColor); drawRayArrow(cx - 50, ly - s*50, s, rayColor);
                 const ix = cx + F_MAG; const iy = cy + s * F_MAG;
                 const sr = (iy - ly) / (ix - cx);
                 drawRayLine(cx, ly, width, ly + sr*(width-cx), outColor);
@@ -372,121 +242,97 @@
                 updateUI_Infinity(iy - cy, "Real, Inverted");
             } else {
                 drawRayLine(0, cy - s*cx, width, cy + s*(width-cx), rayColor);
-                drawRayArrow(cx - 100, cy - s*100, s, rayColor);
+                drawRayArrow(cx - 50, cy - s*50, s, rayColor);
                 const ly = cy + s * (cx - cx - F_MAG);
                 const sx = 0; const sy = cy + s * (sx - cx - F_MAG);
-                drawRayLine(sx, sy, cx, ly, rayColor);
-                drawRayLine(cx, ly, cx + F_MAG, cy, rayColor, true);
-                drawRayLine(cx, ly, width, ly, outColor);
-                drawRayLine(cx, ly, 0, ly, outColor, true);
-                const ix = cx - F_MAG;
-                drawImageArrow(ix, cy, ix, ly, "#ef4444", true);
-                ctx.fillStyle = "#ef4444"; ctx.fillText("I", ix - 15, ly - 10);
+                drawRayLine(sx, sy, cx, ly, rayColor); drawRayLine(cx, ly, cx + F_MAG, cy, rayColor, true);
+                drawRayLine(cx, ly, width, ly, outColor); drawRayLine(cx, ly, 0, ly, outColor, true);
+                const ix = cx - F_MAG; drawImageArrow(ix, cy, ix, ly, "#ef4444", true);
                 updateUI_Infinity(cy - ly, "Virtual, Erect");
             }
         }
-
         function drawImageArrow(x1, y1, x2, y2, color, dashed) {
             ctx.beginPath(); ctx.strokeStyle = color; ctx.lineWidth = 3;
-            if (dashed) ctx.setLineDash([6, 6]); else ctx.setLineDash([]);
-            ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
-            ctx.setLineDash([]);
-            const angle = Math.atan2(y2-y1, x2-x1);
-            ctx.beginPath(); ctx.fillStyle = color;
-            ctx.moveTo(x2, y2);
-            ctx.lineTo(x2 - 12 * Math.cos(angle - Math.PI/6), y2 - 12 * Math.sin(angle - Math.PI/6));
-            ctx.lineTo(x2 - 12 * Math.cos(angle + Math.PI/6), y2 - 12 * Math.sin(angle + Math.PI/6));
+            if (dashed) ctx.setLineDash([5, 5]); else ctx.setLineDash([]);
+            ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); ctx.setLineDash([]);
+            const angle = Math.atan2(y2-y1, x2-x1); const headLen = width < 500 ? 8 : 12;
+            ctx.beginPath(); ctx.fillStyle = color; ctx.moveTo(x2, y2);
+            ctx.lineTo(x2 - headLen * Math.cos(angle - Math.PI/6), y2 - headLen * Math.sin(angle - Math.PI/6));
+            ctx.lineTo(x2 - headLen * Math.cos(angle + Math.PI/6), y2 - headLen * Math.sin(angle + Math.PI/6));
             ctx.fill();
         }
-
         function drawRayArrow(x, y, slope, color) {
-            const angle = Math.atan(slope);
+            const angle = Math.atan(slope); const headLen = width < 500 ? 6 : 8;
             ctx.beginPath(); ctx.fillStyle = color;
-            ctx.moveTo(x + 8 * Math.cos(angle), y + 8 * Math.sin(angle));
-            ctx.lineTo(x - 8 * Math.cos(angle - 0.5), y - 8 * Math.sin(angle - 0.5));
-            ctx.lineTo(x - 8 * Math.cos(angle + 0.5), y - 8 * Math.sin(angle + 0.5));
+            ctx.moveTo(x + headLen * Math.cos(angle), y + headLen * Math.sin(angle));
+            ctx.lineTo(x - headLen * Math.cos(angle - 0.5), y - headLen * Math.sin(angle - 0.5));
+            ctx.lineTo(x - headLen * Math.cos(angle + 0.5), y - headLen * Math.sin(angle + 0.5));
             ctx.fill();
         }
         function drawRayLine(x1, y1, x2, y2, color, dashed=false) {
             ctx.beginPath(); ctx.strokeStyle = color; ctx.lineWidth = 2;
-            if(dashed) ctx.setLineDash([5, 5]); else ctx.setLineDash([]);
-            ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
-            ctx.setLineDash([]);
+            if(dashed) ctx.setLineDash([4, 4]); else ctx.setLineDash([]);
+            ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); ctx.setLineDash([]);
         }
         function drawAxisArrows(x, y1, y2) {
-            ctx.fillStyle = "black";
-            const type = state.lens;
-            ctx.beginPath();
-            if(type === 'convex') { ctx.moveTo(x, y1); ctx.lineTo(x-5, y1+10); ctx.lineTo(x+5, y1+10); } 
-            else { ctx.moveTo(x, y1+10); ctx.lineTo(x-5, y1); ctx.lineTo(x+5, y1); }
-            ctx.fill();
-            ctx.beginPath();
-            if(type === 'convex') { ctx.moveTo(x, y2); ctx.lineTo(x-5, y2-10); ctx.lineTo(x+5, y2-10); } 
-            else { ctx.moveTo(x, y2-10); ctx.lineTo(x-5, y2); ctx.lineTo(x+5, y2); }
-            ctx.fill();
+            ctx.fillStyle = "black"; const type = state.lens; ctx.beginPath();
+            if(type === 'convex') { ctx.moveTo(x, y1); ctx.lineTo(x-4, y1+8); ctx.lineTo(x+4, y1+8); } 
+            else { ctx.moveTo(x, y1+8); ctx.lineTo(x-4, y1); ctx.lineTo(x+4, y1); } ctx.fill();
+            ctx.beginPath(); if(type === 'convex') { ctx.moveTo(x, y2); ctx.lineTo(x-4, y2-8); ctx.lineTo(x+4, y2-8); } 
+            else { ctx.moveTo(x, y2-8); ctx.lineTo(x-4, y2); ctx.lineTo(x+4, y2); } ctx.fill();
         }
         function drawPoint(x, y, label) {
             ctx.beginPath(); ctx.fillStyle = "black"; ctx.arc(x, y, 3, 0, Math.PI*2); ctx.fill();
-            if(label) { ctx.font = "10px sans-serif"; ctx.fillText(label, x-5, y+15); }
+            if(label) { ctx.font = "10px sans-serif"; ctx.fillText(label, x-4, y+14); }
         }
         function updateUI_Infinity(hi, nature) {
-            document.getElementById('natureDisplay').innerText = nature;
-            document.getElementById('disp-u').innerText = "∞";
-            document.getElementById('disp-v').innerText = F_MAG;
-            document.getElementById('disp-m').innerText = "0.00x";
-            document.getElementById('disp-hi').innerText = Math.abs(hi).toFixed(1);
+            const fDisp = state.lens === 'concave' ? -120 : 120;
+            document.getElementById('disp-f').innerText = fDisp; document.getElementById('natureDisplay').innerText = nature;
+            document.getElementById('disp-u').innerText = "∞"; document.getElementById('disp-v').innerText = fDisp;
+            document.getElementById('disp-m').innerText = "0.00x"; document.getElementById('disp-hi').innerText = Math.abs(hi).toFixed(1);
         }
-        function updateStatBox(v, m, hi) {
-            let nature = v > 0 ? "Real" : "Virtual";
-            nature += ", " + (m > 0 ? "Erect" : "Inverted");
-            nature += ", " + (Math.abs(m) > 1 ? "Magnified" : (Math.abs(m) < 1 ? "Diminished" : "Same Size"));
-            document.getElementById('natureDisplay').innerText = nature;
-            document.getElementById('disp-u').innerText = state.u;
-            document.getElementById('disp-v').innerText = Math.abs(v).toFixed(1);
-            document.getElementById('disp-m').innerText = Math.abs(m).toFixed(2) + "x";
-            document.getElementById('disp-hi').innerText = Math.abs(hi).toFixed(1);
+        function updateStatBox(u, v, m, hi) {
+            const stdF = 120; const rawU = parseInt(document.getElementById('uRange').value);
+            const stdU = state.infinity ? Infinity : rawU; const stdF_signed = state.lens === 'convex' ? stdF : -stdF;
+            let stdV; if (stdU === Infinity) stdV = stdF_signed; else stdV = (stdF_signed * stdU) / (stdU + stdF_signed);
+            let stdM = stdV / stdU; if (stdU === Infinity) stdM = 0;
+            const nature = (stdV > 0 ? "Real" : "Virtual") + ", " + (stdM > 0 ? "Erect" : "Inverted") + ", " + (Math.abs(stdM) > 1 ? "Magnified" : (Math.abs(stdM) < 1 ? "Diminished" : "Same"));
+            document.getElementById('natureDisplay').innerText = nature; document.getElementById('disp-f').innerText = stdF_signed;
+            document.getElementById('disp-u').innerText = stdU === Infinity ? "∞" : stdU;
+            document.getElementById('disp-v').innerText = Math.abs(stdV) === Infinity ? "∞" : stdV.toFixed(1);
+            document.getElementById('disp-m').innerText = Math.abs(stdM).toFixed(2);
+            document.getElementById('disp-hi').innerText = Math.abs(90 * stdM).toFixed(1);
         }
-
-        // --- CONTROLLER ---
         function manualUpdate() {
-            state.lens = document.getElementById('lensSelect').value;
-            state.u = parseInt(document.getElementById('uRange').value);
-            state.infinity = false;
-            if (state.lens === 'convex' && state.u < F_MAG) state.caseNum = 1;
-            else if (state.lens === 'concave') state.caseNum = 8;
-            else state.caseNum = 0; 
-            checkEyeButtonVisibility();
-            document.querySelectorAll('.btn-preset').forEach(b => b.classList.remove('btn-active'));
-            draw();
+            state.lens = document.getElementById('lensSelect').value; state.u = parseInt(document.getElementById('uRange').value); state.infinity = false;
+            const f_std = 120; if (state.lens === 'convex' && state.u < f_std) state.caseNum = 1;
+            else if (state.lens === 'concave') state.caseNum = 8; else state.caseNum = 0;
+            updateEyeBtnStyle(); 
+            document.querySelectorAll('.case-btn').forEach(b => b.classList.remove('active')); draw();
         }
         function setCase(n) {
-            state.caseNum = n;
-            document.querySelectorAll('.btn-preset').forEach(b => b.classList.remove('btn-active'));
-            document.getElementById('btn'+n).classList.add('btn-active');
-            const sel = document.getElementById('lensSelect');
-            state.infinity = false;
+            state.caseNum = n; document.querySelectorAll('.case-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('btn'+n).classList.add('active');
+            const sel = document.getElementById('lensSelect'); state.infinity = false;
             
-            if (n <= 6) { state.lens = 'convex'; sel.value = 'convex'; }
-            else { state.lens = 'concave'; sel.value = 'concave'; }
-            
+            // Auto show eye for virtual images
+            if (n === 1 || n === 8) { state.showEye = true; } else { state.showEye = false; }
+
+            if (n <= 6) { state.lens = 'convex'; sel.value = 'convex'; } else { state.lens = 'concave'; sel.value = 'concave'; }
+            let targetU = 240;
             switch(n) {
-                case 1: state.u = 80; break;
-                case 2: state.u = 120; break;
-                case 3: state.u = 180; break;
-                case 4: state.u = 240; break;
-                case 5: state.u = 360; break;
-                case 6: state.infinity = true; break; 
-                case 7: state.infinity = true; break; 
-                case 8: state.u = 240; break;
+                case 1: targetU = 80; break; case 2: targetU = 120; break; case 3: targetU = 180; break;
+                case 4: targetU = 240; break; case 5: targetU = 360; break;
+                case 6: state.infinity = true; break; case 7: state.infinity = true; break; case 8: targetU = 240; break;
             }
-            if(!state.infinity) document.getElementById('uRange').value = state.u;
-            checkEyeButtonVisibility();
-            draw();
+            state.u = targetU; if(!state.infinity) document.getElementById('uRange').value = targetU;
+            document.getElementById('btn'+n).scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            updateEyeBtnStyle(); draw();
         }
 
         // Init
         resize();
-        setCase(3);
+        setCase(1);
     </script>
 </body>
 </html>
